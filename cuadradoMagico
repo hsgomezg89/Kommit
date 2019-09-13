@@ -1,0 +1,205 @@
+package cuadradomagico;
+
+/**
+ *
+ * @author pc
+ */
+public class CuadradoMagico {
+
+    /**
+     *
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        int num[] = llenarArr(5);
+        int[][] s = {{8, 3, 6, 5, 2}, {1, 5, 9, 10, 13}, {6, 7, 2, 16, 15}, {13, 11, 4, 7, 6}, {15, 11, 10, 9, 7}};
+        int a[] = contarFalta(num, s);
+        int n = 5;
+
+        for (int i = 0; i < a.length; i++) {
+            System.out.println(" " + a[i]);
+        }
+        System.out.println(" num es: " + cuadroMagic(s, num, n));
+
+        //int m = 11;
+        //cuadradoMagImpar(m);
+    }
+
+    /**
+     * Metodo que cuenta las filas de la matriz
+     *
+     * @param m, Matriz inicial
+     * @param n,
+     * @return, true si la suma total de cada fila es igual a
+     */
+    static boolean suma(int[][] m, int n) {
+        int sumTotal = 0;
+        boolean sumaF = true;
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m.length; j++) {
+                sumTotal += m[i][j];
+            }
+            if (n != sumTotal) {
+                sumaF = false;
+            }
+            sumTotal = 0;
+
+        }
+        return sumaF;
+    }
+
+    /**
+     * Metodo que busca los numeros repetidos de una matriz
+     *
+     * @param a, arreglo que contiene el numero del rango permitido
+     * @param m, matriz inicial
+     * @return, arreglo con los numeros repetidos
+     */
+    static int[] contarRep(int a[], int m[][]) {
+
+        int cont = 0;
+        int b[] = new int[a.length / 2];
+        int pos = 0;
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < m.length; j++) {
+                for (int k = 0; k < m.length; k++) {
+                    if (a[i] == m[j][k]) {
+                        cont++;
+                    }
+                }
+            }
+            if (cont >= 2) {
+                b[pos] = a[i];
+                pos++;
+            }
+            cont = 0;
+        }
+        return b;
+    }
+
+    /**
+     * Metodo que encuentra los numeros faltantes del rango permitido en una
+     * matriz
+     *
+     * @param a, arreglo con los numero del rango
+     * @param m, matriz inicial
+     * @return, arreglo con lo snumeros faltantes
+     */
+    static int[] contarFalta(int a[], int m[][]) {
+
+        int cont = 0;
+        int b[] = new int[a.length];
+        int pos = 0;
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < m.length; j++) {
+                for (int k = 0; k < m.length; k++) {
+                    if (a[i] == m[j][k]) {
+                        cont++;
+                    }
+                }
+            }
+            if (cont == 0) {
+                b[pos] = a[i];
+                pos++;
+            }
+            cont = 0;
+        }
+        return b;
+    }
+
+    /**
+     * Metodo que llena un arreglo con los numeros del ranog permitido
+     *
+     * @param n, tamaño del arreglo
+     * @return, arreglo con los numeros que estan en el rango
+     */
+    static int[] llenarArr(int n) {
+        int[] a = new int[n * n];
+        int nu = 1;
+        for (int i = 0; i < a.length; i++) {
+            a[i] = nu;
+            nu++;
+        }
+        return a;
+
+    }
+
+    /**
+     * Metodo que ordena los numeros de una matriz por medio del cuadrado magico
+     *
+     * @param m, matriz inicial
+     * @param a, arreglo con los numeros del rango
+     * @param n, numero para definir el tamaño
+     * @return costo minimo
+     */
+    static int cuadroMagic(int[][] m, int[] a, int n) {
+        int ini = ((n * n + 1) * n) / 2;
+        int[] b = contarRep(a, m);
+        int[] c = contarFalta(a, m);
+        //int [][] s = new int [m.length][m.length];
+        int pos = 0;
+        int temp = 0;
+        int minCo = 0;
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m.length; j++) {
+                if (!suma(m, ini)) {
+                    if (m[i][j] == b[pos]) {
+                        temp = m[i][j];
+                        m[i][j] = c[pos];
+                        pos++;
+                    }
+                }
+                minCo += Math.abs((m[i][j] - temp));
+            }
+        }
+        return minCo;
+    }
+
+    /**
+     * Metodo que genera una matriz impar con el algoritmo del cuadrado magico
+     *
+     * @param n tamaño de la matriz
+     */
+    static void cuadradoMagImpar(int n) {
+        int[][] m = new int[n][n];
+
+        int i = n / 2;
+        int j = n - 1;
+
+        for (int num = 1; num <= n * n;) {
+            if (i == -1 && j == n) {
+                j = n - 2;
+                i = 0;
+            } else {
+
+                if (j == n) {
+                    j = 0;
+                }
+
+                if (i < 0) {
+                    i = n - 1;
+                }
+            }
+
+            if (m[i][j] != 0) {
+                j -= 2;
+                i++;
+                continue;
+            } else {
+                m[i][j] = num++;
+            }
+
+            j++;
+            i--;
+        }
+
+        System.out.println(n + ":");
+        System.out.println(n * (n * n + 1) / 2 + ":");
+        for (i = 0; i < n; i++) {
+            for (j = 0; j < n; j++) {
+                System.out.print(m[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
